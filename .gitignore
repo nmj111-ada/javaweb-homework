@@ -1,0 +1,29 @@
+# Eclipse
+.project
+.classpath
+.settings/
+.metadata/
+*.launch
+
+# Build output
+build/
+bin/
+out/
+target/
+*.class
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# 第三方库（体积过大，请按 README 说明自行获取）
+Cesium/
+
+# 日志与备份
+*.log
+*.bak

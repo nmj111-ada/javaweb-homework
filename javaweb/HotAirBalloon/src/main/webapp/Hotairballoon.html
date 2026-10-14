@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>热气球环游 - 3D模型版</title>
+    <link href="Cesium/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        #cesiumContainer {
+            width: 100%;
+            height: 100%;
+        }
+        .radio-group {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 100;
+            font-family: sans-serif;
+        }
+        .radio-group label {
+            margin-right: 15px;
+            cursor: pointer;
+        }
+        .radio-group input {
+            margin-right: 5px;
+        }
+        /* 可选：添加一个重置视角按钮 */
+        .reset-btn {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 100;
+            font-family: sans-serif;
+        }
+        .reset-btn:hover {
+            background: rgba(0,0,0,0.9);
+        }
+    </style>
+</head>
+<body>
+    <div id="cesiumContainer"></div>
+    <div class="radio-group">
+        <span>景点：</span>
+        <label><input type="radio" name="spot" value="yulong" checked> 玉龙雪山</label>
+        <label><input type="radio" name="spot" value="pinqing"> 品清湖</label>
+        <label><input type="radio" name="spot" value="potala"> 布达拉宫</label>
+        <label><input type="radio" name="spot" value="liberty"> 自由女神像</label>
+    </div>
+    <!-- 重置视角按钮 -->
+    <button class="reset-btn" id="resetViewBtn">🎈 找回热气球</button>
+
+    <script src="Cesium/Build/Cesium/Cesium.js"></script>
+    <script>
+        Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIyNjcxNDZiYS0yZTY4LTRjZjQtOGQxNy00MTRlYjk5MzNhYmIiLCJpZCI6NDEwMDM0LCJpYXQiOjE3NzQ2MDk5NTR9.ViZNv1sN1i8woUnTpcEF8P3a4bzvNPWG3VPplOIOoko';
+
+        // 初始化 Viewer
+        const viewer = new Cesium.Viewer('cesiumContainer', {
+            terrainProvider: Cesium.createWorldTerrain(),
+            baseLayerPicker: true,
+            animation: true,
+            timeline: true,
+            fullscreenButton: true,
+            geocoder: true,
+            homeButton: true,
+            sceneModePicker: true,
+            navigationHelpButton: true
+        });
+
+        // 景点坐标 (经度, 纬度, 高度)
+        const spots = {
+            yulong: { lon: 100.243, lat: 27.098, height: 3000, name: '玉龙雪山' },
+            pinqing: { lon: 115.374, lat: 22.788, height: 1000, name: '品清湖' },
+            potala: { lon: 91.117, lat: 29.657, height: 3700, name: '布达拉宫' },
+            liberty: { lon: -74.044, lat: 40.689, height: 500, name: '自由女神像' }
+        };
+
+        const modelUrl = 'models/CesiumBalloon/CesiumBalloon.glb';
+
+        // 热气球实体
+        let balloon = null;
+
+        // 创建热气球模型
+
+        function createBalloon(lon, lat, height) {
+    		if (balloon) {
+        		viewer.entities.remove(balloon);
+    		}
+    	// 增加一个额外的高度偏移，确保热气球高于地形
+    		const extraHeight = 200; 
+    		const position = Cesium.Cartesian3.fromDegrees(lon, lat, height + extraHeight);
+    		balloon = viewer.entities.add({
+        		name: '热气球',
+        		position: position,
+        		model: {
+            		uri: modelUrl,
+            		scale: 1.0,
+            		minimumPixelSize: 64,
+            		maximumScale: 2.0,
+            		depthTestAgainstTerrain: false  
+        		}
+    		});
+    		return balloon;
+		}
+
+        // 初始化热气球
+        createBalloon(spots.yulong.lon, spots.yulong.lat, spots.yulong.height);
+
+        // 为每个景点添加文字标签
+        for (const key in spots) {
+            const spot = spots[key];
+            viewer.entities.add({
+                name: spot.name,
+                position: Cesium.Cartesian3.fromDegrees(spot.lon, spot.lat, spot.height),
+                label: {
+                    text: spot.name,
+                    font: '18px sans-serif',
+                    fillColor: Cesium.Color.YELLOW,
+                    style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+                    outlineWidth: 2,
+                    verticalOrigin: Cesium.VerticalOrigin.BOTTOM,
+                    pixelOffset: new Cesium.Cartesian2(0, -10)
+                }
+            });
+        }
+
+        viewer.scene.postProcessStages.bloom.enabled = false;
+
+        // 辅助函数：让相机对准热气球
+        function focusOnBalloon() {
+            const position = balloon.position.getValue(Cesium.JulianDate.now());
+            // 相机位置：相对于热气球的偏移（东南方向，距离500米）
+            const offset = new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-30), 500);
+            viewer.camera.lookAt(position, offset);
+            // 也可以使用 flyTo 带动画
+            // viewer.camera.flyTo({ destination: position, offset: offset, duration: 1 });
+        }
+
+        // 初始相机视角：对准热气球
+        focusOnBalloon();
+
+        // 单选框切换事件
+        const radios = document.querySelectorAll('input[name="spot"]');
+        radios.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                const spotKey = e.target.value;
+                const spot = spots[spotKey];
+                if (spot) {
+                    // 移动热气球模型
+                    balloon.position = Cesium.Cartesian3.fromDegrees(spot.lon, spot.lat, spot.height);
+                    // 相机飞向新景点，并同时对准热气球（使用相对偏移）
+                    viewer.camera.flyTo({
+                        destination: Cesium.Cartesian3.fromDegrees(spot.lon, spot.lat, spot.height),
+                        orientation: {
+                            heading: Cesium.Math.toRadians(0),
+                            pitch: Cesium.Math.toRadians(-30),
+                            roll: 0
+                        },
+                        offset: new Cesium.HeadingPitchRange(0, Cesium.Math.toRadians(-30), 500),
+                        duration: 2
+                    });
+                }
+            });
+        });
+
+        // 重置视角按钮：让相机回到热气球位置
+        document.getElementById('resetViewBtn').addEventListener('click', () => {
+            focusOnBalloon();
+        });
+
+        console.log('Cesium 初始化完成，3D热气球已加载，泛光已关闭');
+    </script>
+</body>
+</html>

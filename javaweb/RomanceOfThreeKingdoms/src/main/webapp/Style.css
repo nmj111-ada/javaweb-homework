@@ -1,0 +1,102 @@
+/* 基础样式 */
+body {
+    font-family: 'Microsoft YaHei', '宋体', Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.author {
+    text-align: center;
+    font-style: italic;
+    margin-top: 0;
+}
+
+.intro {
+    text-align: justify;
+    line-height: 1.6;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.theme-switcher {
+    text-align: right;
+    margin: 20px 0;
+}
+
+.catalog h2 {
+    border-bottom: 2px solid;
+    padding-bottom: 5px;
+}
+
+.catalog ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.catalog li {
+    margin: 10px 0;
+}
+
+.catalog a {
+    text-decoration: none;
+    font-size: 1.1em;
+    display: block;
+    padding: 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+/* 浅色主题 (默认) */
+.light-theme {
+    background-color: #f9f9f9;
+    color: #333;
+}
+.light-theme .intro {
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+.light-theme .catalog h2 {
+    border-bottom-color: #aaa;
+}
+.light-theme .catalog a {
+    color: #0066cc;
+    background-color: #fff;
+    border: 1px solid #eee;
+}
+.light-theme .catalog a:hover {
+    background-color: #e6f0ff;
+    border-color: #0066cc;
+}
+
+/* 深色主题 */
+.dark-theme {
+    background-color: #222;
+    color: #eee;
+}
+.dark-theme .intro {
+    background-color: #333;
+    border: 1px solid #555;
+}
+.dark-theme .catalog h2 {
+    border-bottom-color: #777;
+}
+.dark-theme .catalog a {
+    color: #99ccff;
+    background-color: #333;
+    border: 1px solid #555;
+}
+.dark-theme .catalog a:hover {
+    background-color: #444;
+    border-color: #99ccff;
+}

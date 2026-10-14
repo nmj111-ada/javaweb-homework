@@ -1,10 +1,6 @@
 # JavaWeb 课程作业合集
 
-这是我（`song1`）大学期间 Java 与 JavaWeb 课程的实验作业与练习项目归档。
-
-原本这些项目存放在 Eclipse 的工作空间里（`D:\eclipse web workplace` 和 `D:\eclipse workplace`）。
-因为已经不再使用 Eclipse，我把它们整理归档到本仓库，然后删除了 Eclipse IDE。
-
+本人大学期间 Java 与 JavaWeb 课程的实验作业与练习项目归档。
 ---
 
 ## 目录结构
@@ -81,15 +77,3 @@ java shiyan6.yinhang
 | RomanceOfThreeKingdoms | `/RomanceOfThreeKingdoms/index.jsp` |
 | yanghui | `/yanghui_input.html`、`/md5_input.html` |
 | HotAirBalloon | `/Hotairballoon.html` |
-
-> **注意 HotAirBalloon 的 Cesium 库**
-> 原项目里打包了完整的 CesiumJS（约 41 MB），属于第三方库，归档时已剔除。
-> 如需运行，请自行下载 [CesiumJS](https://cesium.com/downloads/) 并解压到
-> `javaweb/HotAirBalloon/src/main/webapp/Cesium/` 目录下，保持 `Cesium/Build/Cesium/...` 的路径结构即可。
-> 自己的 3D 模型 `models/CesiumBalloon/CesiumBalloon.glb` 已保留。
-
----
-
-## 归档说明
-
-Eclipse 的 `.project`、`.classpath`、`.settings/`、`build/`、`bin/` 等 IDE 生成文件已通过 `.gitignore` 排除，仓库中只保留源码。
